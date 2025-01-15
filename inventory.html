@@ -68,21 +68,34 @@
             margin-bottom: 20px;
             text-align: center;
         }
+
+        /* 商品ID, 単価, 数量, 全体金額などの幅を調整 */
         th:nth-child(1), td:nth-child(1),
         th:nth-child(3), td:nth-child(3),
         th:nth-child(4), td:nth-child(4),
         th:nth-child(6), td:nth-child(6),
         th:nth-child(7), td:nth-child(7) {
-        width: 100px;  /* 幅を指定 */
-        word-wrap: break-word;  /* テキストが長い場合に折り返す */
+            width: 100px;  /* 幅を指定 */
+            word-wrap: break-word;  /* テキストが長い場合に折り返す */
         }
+
+        /* 商品名の幅を調整 */
         th:nth-child(2), td:nth-child(2) {
-        width: 1000px;  /* 幅を指定 */
-        word-wrap: break-word;  /* テキストが長い場合に折り返す */
+            width: 400px;  /* 幅を指定 */
+            word-wrap: break-word;  /* テキストが長い場合に折り返す */
         }
+
+        /* カテゴリー名の幅を調整 */
         th:nth-child(5), td:nth-child(5) {
-        width: 200px;  /* 幅を指定 */
-        word-wrap: break-word;  /* テキストが長い場合に折り返す */
+            width: 200px;  /* 幅を指定 */
+            word-wrap: break-word;  /* テキストが長い場合に折り返す */
+        }
+
+        /* 横スクロール可能にするためのラッパー */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto; /* 横スクロールを有効にする */
+            -webkit-overflow-scrolling: touch; /* スムーズなスクロールをサポート */
         }
     </style>
 </head>
@@ -115,22 +128,25 @@
         <button onclick="cancelEdit()">キャンセル</button>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>商品ID <button id="sortProductIdBtn" onclick="sortByProductId()">昇順</button></th>
-                <th>商品名</th>
-                <th>単価</th>
-                <th>数量</th>
-                <th>カテゴリー名 <button id="sortCategoryBtn" onclick="sortByCategory()">昇順</button></th>
-                <th>全体金額</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody id="inventoryTable">
-            <!-- 商品情報がここに追加されます -->
-        </tbody>
-    </table>
+    <!-- テーブルをラップする div に横スクロールを追加 -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>商品ID <button id="sortProductIdBtn" onclick="sortByProductId()">昇順</button></th>
+                    <th>商品名</th>
+                    <th>単価</th>
+                    <th>数量</th>
+                    <th>カテゴリー名 <button id="sortCategoryBtn" onclick="sortByCategory()">昇順</button></th>
+                    <th>全体金額</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="inventoryTable">
+                <!-- 商品情報がここに追加されます -->
+            </tbody>
+        </table>
+    </div>
 
     <div class="total-amount">
         合計金額: <span id="totalAmountDisplay">0円</span>
