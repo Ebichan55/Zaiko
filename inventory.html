@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>在庫管理</title>
+    <title>在庫一覧</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -72,7 +72,7 @@
 </head>
 <body>
 
-    <h1>在庫管理</h1>
+    <h1>在庫一覧</h1>
     <nav>
         <a href="index.html">トップ画面</a>
         <a href="sales_sheet.html">売上計算</a>
@@ -97,6 +97,12 @@
         <input type="text" id="editCategory" placeholder="カテゴリー名">
         <button onclick="updateItem()">更新</button>
         <button onclick="cancelEdit()">キャンセル</button>
+    </div>
+
+    <!-- 検索フォーム -->
+    <div class="input-form">
+        <input type="text" id="searchKeyword" placeholder="商品ID, 商品名, カテゴリー名で検索">
+        <button onclick="searchItems()">検索</button>
     </div>
 
     <!-- テーブルをラップする div に横スクロールを追加 -->
@@ -129,6 +135,7 @@
         let editingProductId = null; // 編集中の商品IDを保存
         let productIdSortOrder = 'asc';  // 商品IDのソート順（昇順）
         let categorySortOrder = 'asc';   // カテゴリー名のソート順（昇順）
+        let currentInventory = []; // 現在の在庫リストを保存
 
         window.onload = function() {
             loadInventory();
@@ -136,10 +143,16 @@
 
         function saveInventory(inventory) {
             localStorage.setItem('inventory', JSON.stringify(inventory));
+            currentInventory = inventory; // 保存後、現在の在庫リストを更新
         }
 
         function loadInventory() {
             const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            currentInventory = inventory; // 在庫リストを更新
+            renderInventory(inventory);
+        }
+
+        function renderInventory(inventory) {
             const tableBody = document.getElementById('inventoryTable');
             tableBody.innerHTML = ''; 
 
@@ -305,6 +318,17 @@
 
             saveInventory(inventory);
             loadInventory();
+        }
+
+        // 検索機能
+        function searchItems() {
+            const keyword = document.getElementById('searchKeyword').value.toLowerCase();
+            const filteredInventory = currentInventory.filter(item => 
+                item.productId.includes(keyword) || 
+                item.productName.toLowerCase().includes(keyword) || 
+                item.category.toLowerCase().includes(keyword)
+            );
+            renderInventory(filteredInventory);
         }
     </script>
 
