@@ -91,12 +91,17 @@
             word-wrap: break-word;  /* テキストが長い場合に折り返す */
         }
 
-        /* 横スクロール可能にするためのラッパー */
         .table-wrapper {
-            width: 100%;
-            overflow-x: auto; /* 横スクロールを有効にする */
-            -webkit-overflow-scrolling: touch; /* スムーズなスクロールをサポート */
+        width: 100%;
+        overflow-x: auto; /* 横スクロールを有効にする */
+        -webkit-overflow-scrolling: touch; /* スムーズなスクロールをサポート */
+        white-space: nowrap; /* テーブルのセルが折り返さないようにする */
         }
+
+        table {
+        min-width: 1000px; /* 最小幅を指定して、横スクロールが発生するように調整 */
+        border-collapse: collapse;
+        }   
     </style>
 </head>
 <body>
