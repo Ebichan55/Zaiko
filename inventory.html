@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -67,7 +67,7 @@
         .edit-form {
             margin-bottom: 20px;
             text-align: center;
-        }  
+        }
     </style>
 </head>
 <body>
@@ -106,8 +106,14 @@
 
     <!-- 検索フォーム -->
     <div class="input-form">
-        <input type="text" id="searchKeyword" placeholder="商品ID, 商品名, カテゴリー名で検索">
+        <select id="searchCategory">
+            <option value="productId">商品ID</option>
+            <option value="productName">商品名</option>
+            <option value="category">カテゴリー名</option>
+        </select>
+        <input type="text" id="searchKeyword" placeholder="検索ワード">
         <button onclick="searchItems()">検索</button>
+        <button onclick="resetSearch()">元に戻す</button>
     </div>
 
     <!-- テーブルをラップする div に横スクロールを追加 -->
@@ -141,6 +147,7 @@
         let productIdSortOrder = 'asc';  // 商品IDのソート順（昇順）
         let categorySortOrder = 'asc';   // カテゴリー名のソート順（昇順）
         let currentInventory = []; // 現在の在庫リストを保存
+        let originalInventory = []; // 元の在庫リストを保存（検索リセット用）
 
         window.onload = function() {
             loadInventory();
@@ -149,11 +156,13 @@
         function saveInventory(inventory) {
             localStorage.setItem('inventory', JSON.stringify(inventory));
             currentInventory = inventory; // 保存後、現在の在庫リストを更新
+            originalInventory = [...inventory]; // 元の在庫リストも更新
         }
 
         function loadInventory() {
             const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
             currentInventory = inventory; // 在庫リストを更新
+            originalInventory = [...inventory]; // 元の在庫リストを更新
             renderInventory(inventory);
         }
 
@@ -337,6 +346,29 @@
 
             saveInventory(inventory);
             loadInventory();
+        }
+
+        function searchItems() {
+            const searchCategory = document.getElementById('searchCategory').value;
+            const searchKeyword = document.getElementById('searchKeyword').value.toLowerCase();
+
+            const filteredInventory = currentInventory.filter(item => {
+                if (searchCategory === "productId") {
+                    return item.productId.includes(searchKeyword);
+                } else if (searchCategory === "productName") {
+                    return item.productName.toLowerCase().includes(searchKeyword);
+                } else if (searchCategory === "category") {
+                    return item.category.toLowerCase().includes(searchKeyword);
+                }
+                return false;
+            });
+
+            renderInventory(filteredInventory);
+        }
+
+        function resetSearch() {
+            renderInventory(originalInventory); // 元の在庫リストを再表示
+            document.getElementById('searchKeyword').value = ''; // 検索ワードをクリア
         }
     </script>
 
