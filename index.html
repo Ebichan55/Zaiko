@@ -27,6 +27,19 @@
         nav a:hover {
             background-color: #45a049;
         }
+        @media (max-width: 600px) {
+            nav {
+                display: flex;
+                flex-direction: column; /* 縦並びに変更 */
+                align-items: center; /* 中央揃え */
+            }
+
+            nav a {
+                margin: 10px 0; /* 縦並びにしたときの間隔を調整 */
+                width: 100%; /* ボタンの幅を100%にして、画面幅いっぱいに広げる */
+                text-align: center; /* 中央揃え */
+            }
+        }
     </style>
 </head>
 <body>
