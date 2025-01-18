@@ -73,6 +73,7 @@
     <nav>
         <a href="index.html">トップ画面</a>
         <a href="inventory.html">在庫一覧</a>
+        <a href="history.html">販売履歴</a>
     </nav>
 
     <div class="input-form">
@@ -254,41 +255,57 @@
             return totalSoldQuantity;
         }
 
-        // 販売確定ボタンが押された時に在庫から数量を引く
-        function confirmSale() {
-            const confirm = window.confirm("本当に販売を確定してよろしいでしょうか？");
+        // 販売確定ボタンが押された時に販売履歴を保存
+function confirmSale() {
+    const confirm = window.confirm("本当に販売を確定してよろしいでしょうか？");
 
-            if (confirm) {
-                const inventory = loadInventory();
-                const rows = document.querySelectorAll("#salesTable tr");
+    if (confirm) {
+        const inventory = loadInventory();
+        const rows = document.querySelectorAll("#salesTable tr");
+        const salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
 
-                rows.forEach(row => {
-                    const productId = row.cells[0].textContent;
-                    const saleQuantity = parseInt(row.cells[1].textContent);
+        rows.forEach(row => {
+            const productId = row.cells[0].textContent;
+            const saleQuantity = parseInt(row.cells[1].textContent);
+            const product = inventory.find(item => item.productId === productId);
 
-                    const product = inventory.find(item => item.productId === productId);
+            if (product) {
+                // 在庫から販売数量を引く
+                product.quantity -= saleQuantity;
+                
+                // 販売履歴を保存
+                const saleDate = new Date().toLocaleString();
+                const totalAmount = product.unitPrice * saleQuantity;
 
-                    if (product) {
-                        // 在庫から販売数量を引く
-                        product.quantity -= saleQuantity;
-                    }
+                salesHistory.push({
+                    saleDate: saleDate,
+                    productId: productId,
+                    productName: product.productName,
+                    quantity: saleQuantity,
+                    totalAmount: totalAmount
                 });
-
-                // 在庫を更新
-                localStorage.setItem('inventory', JSON.stringify(inventory));
-
-                // 確認メッセージを表示
-                alert("販売が確定しました。");
-
-                // 販売シートをリセット
-                document.getElementById("salesTable").innerHTML = "";
-
-                // 在庫情報を更新
-                populateProductOptions();
-            } else {
-                alert("販売は確定されませんでした。");
             }
-        }
+        });
+
+        // 在庫を更新
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+        
+        // 販売履歴を更新
+        localStorage.setItem('salesHistory', JSON.stringify(salesHistory));
+
+        // 確認メッセージを表示
+        alert("販売が確定しました。");
+
+        // 販売シートをリセット
+        document.getElementById("salesTable").innerHTML = "";
+
+        // 在庫情報を更新
+        populateProductOptions();
+    } else {
+        alert("販売は確定されませんでした。");
+    }
+}
+
 
         // ページが読み込まれた際に商品IDの選択肢を追加
         window.onload = function() {
