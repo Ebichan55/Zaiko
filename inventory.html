@@ -88,6 +88,11 @@
         <button onclick="addItem()">追加</button>
     </div>
 
+    <!-- 一括削除ボタン -->
+    <div class="input-form" style="text-align: center;">
+        <button onclick="deleteOutOfStockItems()">数量が0の商品の一括削除</button>
+    </div>
+
     <!-- 編集フォーム -->
     <div class="edit-form" id="editForm" style="display: none;">
         <h3>商品編集</h3>
@@ -286,6 +291,20 @@
             document.getElementById('editForm').style.display = 'none';
         }
 
+        // 数量が0の商品の一括削除
+        function deleteOutOfStockItems() {
+            const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            const filteredInventory = inventory.filter(item => item.quantity > 0); // 数量が0のものを除外
+
+            if (filteredInventory.length === inventory.length) {
+                alert("数量が0の商品はありません。");
+            } else {
+                saveInventory(filteredInventory); // ローカルストレージを更新
+                loadInventory(); // 在庫リストを再描画
+                alert("数量が0の商品を削除しました。");
+            }
+        }
+
         // 商品IDでソートする関数
         function sortByProductId() {
             const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
@@ -320,14 +339,15 @@
             loadInventory();
         }
 
-        // 検索機能
+        // 商品の検索機能
         function searchItems() {
             const keyword = document.getElementById('searchKeyword').value.toLowerCase();
-            const filteredInventory = currentInventory.filter(item => 
-                item.productId.includes(keyword) || 
-                item.productName.toLowerCase().includes(keyword) || 
-                item.category.toLowerCase().includes(keyword)
-            );
+            const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            const filteredInventory = inventory.filter(item => {
+                return item.productId.includes(keyword) || 
+                       item.productName.toLowerCase().includes(keyword) ||
+                       item.category.toLowerCase().includes(keyword);
+            });
             renderInventory(filteredInventory);
         }
     </script>
