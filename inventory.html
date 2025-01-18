@@ -202,7 +202,7 @@
                 return;
             }
 
-            if (productId === "" || productName === "" || isNaN(unitPrice) || isNaN(quantity) || unitPrice <= 0 || quantity <= 0 || category === "") {
+            if (productId === "" || productName === "" || isNaN(unitPrice) || isNaN(quantity) || unitPrice <= 0 || category === "") {
                 alert("すべての項目を正しく入力してください。");
                 return;
             }
@@ -266,7 +266,7 @@
             const quantity = parseInt(document.getElementById('editQuantity').value);
             const category = document.getElementById('editCategory').value;
 
-            if (productName === "" || isNaN(unitPrice) || isNaN(quantity) || unitPrice <= 0 || quantity <= 0 || category === "") {
+            if (productName === "" || isNaN(unitPrice) || isNaN(quantity) || unitPrice <= 0 || category === "") {
                 alert("すべての項目を正しく入力してください。");
                 return;
             }
@@ -337,18 +337,6 @@
 
             saveInventory(inventory);
             loadInventory();
-        }
-
-        // 商品の検索機能
-        function searchItems() {
-            const keyword = document.getElementById('searchKeyword').value.toLowerCase();
-            const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
-            const filteredInventory = inventory.filter(item => {
-                return item.productId.includes(keyword) || 
-                       item.productName.toLowerCase().includes(keyword) ||
-                       item.category.toLowerCase().includes(keyword);
-            });
-            renderInventory(filteredInventory);
         }
     </script>
 
