@@ -48,11 +48,11 @@
             text-align: center;
         }
         #salesTable tr:nth-child(odd) {
-        background-color: #f0f8ff; /* 薄い青色 */
+            background-color: #f0f8ff; /* 薄い青色 */
         }
 
         #salesTable tr:nth-child(even) {
-        background-color: white; /* 白色 */
+            background-color: white; /* 白色 */
         }
         .delete-button {
             color: red;
@@ -127,7 +127,6 @@
             const inventory = loadInventory();
             const productSelect = document.getElementById("saleProductId");
 
-            // 商品IDが既に存在する場合、プルダウンメニューに追加
             inventory.forEach(product => {
                 const option = document.createElement("option");
                 option.value = product.productId;
@@ -167,11 +166,12 @@
                 return;
             }
 
-            // 現在までの販売数量を合計
-            const totalSoldQuantity = getTotalSoldQuantity();
+            // 商品ごとに現在までの販売数量を合計
+            const totalSoldQuantityForProduct = getTotalSoldQuantityForProduct(saleProductId);
 
-            if (totalSoldQuantity + saleQuantity > product.quantity) {
-                alert(`在庫数を超える数量は販売できません。現在の在庫数: ${product.quantity - totalSoldQuantity}`);
+            // 在庫数を超える数量は販売できないように変更
+            if (totalSoldQuantityForProduct + saleQuantity > product.quantity) {
+                alert(`商品ID: ${saleProductId} の在庫数を超える数量は販売できません。現在の在庫数: ${product.quantity - totalSoldQuantityForProduct}`);
                 return;
             }
 
@@ -218,7 +218,7 @@
             // テーブル内のすべての販売金額を合計
             const rows = document.querySelectorAll("#salesTable tr");
             rows.forEach(row => {
-                const amount = parseInt(row.cells[3].textContent.replace("円", ""));
+                const amount = parseInt(row.cells[3].textContent.replace("円", "")); // "円"を除去して数値に変換
                 totalAmount += amount;
             });
 
@@ -238,14 +238,17 @@
             document.getElementById("netRevenueDisplay").textContent = netRevenue + "円";
         }
 
-        // 現在の販売数量の合計を取得
-        function getTotalSoldQuantity() {
+        // 商品IDごとの販売数量合計を取得
+        function getTotalSoldQuantityForProduct(productId) {
             let totalSoldQuantity = 0;
             const rows = document.querySelectorAll("#salesTable tr");
 
             rows.forEach(row => {
-                const quantity = parseInt(row.cells[1].textContent);
-                totalSoldQuantity += quantity;
+                const rowProductId = row.cells[0].textContent;
+                if (rowProductId === productId) {
+                    const quantity = parseInt(row.cells[1].textContent);
+                    totalSoldQuantity += quantity;
+                }
             });
 
             return totalSoldQuantity;
@@ -253,7 +256,6 @@
 
         // 販売確定ボタンが押された時に在庫から数量を引く
         function confirmSale() {
-            // 確認ダイアログ
             const confirm = window.confirm("本当に販売を確定してよろしいでしょうか？");
 
             if (confirm) {
@@ -284,7 +286,6 @@
                 // 在庫情報を更新
                 populateProductOptions();
             } else {
-                // 確定しない場合
                 alert("販売は確定されませんでした。");
             }
         }
