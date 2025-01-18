@@ -46,6 +46,7 @@
         #salesHistoryTable tr:nth-child(even) {
             background-color: white; /* 白 */
         }
+
         @media (max-width: 600px) {
             nav {
                 display: flex;
@@ -58,6 +59,13 @@
                 width: 100%; /* ボタンの幅を100%にして、画面幅いっぱいに広げる */
                 text-align: center; /* 中央揃え */
             }
+        }
+
+        .total-amount {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -85,12 +93,17 @@
         </tbody>
     </table>
 
+    <div class="total-amount">
+        合計金額: <span id="totalAmountDisplay">0円</span>
+    </div>
+
     <script>
-        // 販売履歴を表示する
+        // 販売履歴を表示し、合計金額を計算する
         function loadSalesHistory() {
             const salesHistory = JSON.parse(localStorage.getItem('salesHistory')) || [];
             const salesHistoryTable = document.getElementById('salesHistoryTable');
-            
+            let totalAmount = 0;  // 合計金額を保持する変数
+
             salesHistory.forEach(sale => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -101,7 +114,13 @@
                     <td>${sale.totalAmount}円</td>
                 `;
                 salesHistoryTable.appendChild(row);
+
+                // 合計金額を計算
+                totalAmount += sale.totalAmount;
             });
+
+            // 合計金額を表示
+            document.getElementById('totalAmountDisplay').textContent = totalAmount + "円";
         }
 
         // ページが読み込まれたときに販売履歴をロード
